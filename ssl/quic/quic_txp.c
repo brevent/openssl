@@ -2181,6 +2181,11 @@ static void txp_requeue_crypto_for_probe(OSSL_QUIC_TX_PACKETISER *txp,
     if (probe_info->pto[pn_space] == 0)
         return;
 
+    if (txp->want_conn_close) {
+        probe_info->pto[pn_space] = 0;
+        return;
+    }
+
     crypto = txp->args.crypto[pn_space];
     if (sstream_is_pending(crypto))
         return;
